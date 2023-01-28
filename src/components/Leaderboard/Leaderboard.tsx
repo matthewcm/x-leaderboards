@@ -17,11 +17,9 @@ export const Leaderboard = ({
         <img src='/trophy-icon.png' width={250} alt='nope' className=' object-center' />
       </div>
 
-      <div>
-        {
-          scores.length > 0 && <LeaderboardTable rows={scores} />
-        }
-      </div>
+      {
+        scores.length > 0 && <LeaderboardTable rows={scores} />
+      }
     </div>
   )
 }

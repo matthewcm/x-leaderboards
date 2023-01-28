@@ -1,32 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, DragEvent, ChangeEventHandler, ChangeEvent} from 'react';
 import PropTypes from 'prop-types';
 import './Dropzone.css';
 
-const preventDefaults = e => {
-  e.preventDefault();
-  e.stopPropagation();
-};
+type DropzoneProps = {
+  id: string,
+  onFileUpload: (file: File) => void 
+}
 
-export const Dropzone = ({ id, onFileUpload }) => {
+export const Dropzone = ({ id, onFileUpload } : DropzoneProps) => {
   const [isHighlighted, setIsHighlighted] = useState(false);
 
-  const onDragEnterOverHandler = e => {
-    preventDefaults(e);
+  const onDragEnterOverHandler = (e: DragEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setIsHighlighted(true);
   };
 
-  const onDragLeaveHandler = e => {
-    preventDefaults(e);
+  const onDragLeaveHandler = (e: DragEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setIsHighlighted(false);
   };
 
-  const onDropHandler = e => {
-    preventDefaults(e);
+  const onDropHandler = (e: DragEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setIsHighlighted(false);
     onFileUpload(e.dataTransfer.files[0]);
   };
 
-  const onChangeHandler = e => onFileUpload(e.target.files[0]);
+  const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return
+    onFileUpload(e.target.files[0]);
+  }
 
   return (
     <form
@@ -45,8 +48,7 @@ export const Dropzone = ({ id, onFileUpload }) => {
       <label htmlFor={id} className={`dropzone-label ${isHighlighted ? 'highlight': '' }`}>
         <p>
           Click here to upload a chat export file or drag and drop it onto the dashed region
-          (supported format: <span style={{color: 'red'}}>txt</span>
-)
+          (supported format: <span style={{color: 'red'}}>txt</span>)
         </p>
       </label>
     </form>
