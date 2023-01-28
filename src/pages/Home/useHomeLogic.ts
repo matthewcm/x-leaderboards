@@ -1,12 +1,15 @@
-import { useState, useEffect, useMemo } from 'react';
+
+import { useState, useMemo } from 'react';
 import { parseString } from 'whatsapp-chat-parser';
+import { Message } from 'whatsapp-chat-parser/types/types';
+import { Messages, Scores } from '../../interfaces/interfaces';
 
 const showError = (message: string, err?: Error) => {
   console.error(err || message); // eslint-disable-line no-console
   alert(message); // eslint-disable-line no-alert
 };
 
-const replaceEncryptionMessageAuthor = messages =>
+const replaceEncryptionMessageAuthor = (messages: Messages) =>
   messages.map((message, i) => {
     if (i < 10 && message.message.includes('end-to-end')) {
       return { ...message, author: 'System' };
@@ -15,11 +18,8 @@ const replaceEncryptionMessageAuthor = messages =>
   });
 
 export const useHomeLogic = () => {
-  const [messages, setMessages] = useState([]);
-  const [scores , setScores] = useState<{
-    name: string,
-    score: number
-  }[]>([]);
+  const [messages, setMessages] = useState<Messages>([]);
+  const [scores , setScores] = useState<Scores>([]);
 
   
   const xRecord = useMemo(
@@ -66,12 +66,12 @@ export const useHomeLogic = () => {
         score: number
       }[] = [];
 
-      const xMessages = messages.filter(({ message, author }: { author: string, message: string }) => {
+      const xMessages = messages.filter(({ message }: Message) => {
         const withX = /(\n|^)x.*/i
         return message.match(withX)
       })
 
-      xMessages.forEach(({ message, author }: { author: string, message: string }) => {
+      xMessages.forEach(({ author }: Message) => {
         if (xScores[author] != undefined) {
         xScores[author] += 1;
         }
